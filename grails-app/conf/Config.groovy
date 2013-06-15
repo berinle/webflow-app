@@ -89,3 +89,6 @@ log4j = {
            'org.hibernate',
            'net.sf.ehcache.hibernate'
 }
+
+stripe.publishableKey='your-publishable-key'
+stripe.secretKey='your-secret-key'

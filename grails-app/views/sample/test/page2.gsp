@@ -10,18 +10,37 @@
 <script type="text/javascript">
     $(document).ready(function() {
 
+        Stripe.setPublishableKey("${grailsApplication.config.stripe.publishableKey}");
+
         var $myForm = $("#myForm");
         $('#finish-btn').click(function(event) {
-            console.log("now preventing the form submission");
             event.preventDefault();
 
-            $.getJSON("https://github.com/groovybayo.json", function(data){
-                console.log("now submitting the form...");
-                $myForm.submit();
-            });
+            Stripe.card.createToken({
+                number: "4242424242424242",
+                cvc: "123",
+                exp_month: "10",
+                exp_year: "20"
+            }, stripeResponseHandler);
 
             return false;
         });
+
+        var stripeResponseHandler = function(status, response) {
+            var $form = $('#myForm');
+
+            if (response.error) {
+               console.log("errors: " + response.error.message);
+            } else {
+                // token contains id, last4, and card type
+                var token = response.id;
+                console.log(token);
+                // Insert the token into the form so it gets submitted to the server
+                $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+                // and submit
+                $form.get(0).submit();
+            }
+        };
 
     });
 </script>
