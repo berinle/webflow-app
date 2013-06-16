@@ -12,7 +12,6 @@
 
         Stripe.setPublishableKey("${grailsApplication.config.stripe.publishableKey}");
 
-        var $myForm = $("#myForm");
         $('#finish-btn').click(function(event) {
             event.preventDefault();
 
@@ -23,7 +22,6 @@
                 exp_year: "20"
             }, stripeResponseHandler);
 
-            return false;
         });
 
         var stripeResponseHandler = function(status, response) {
@@ -37,12 +35,18 @@
                 console.log(token);
                 // Insert the token into the form so it gets submitted to the server
                 $form.append($('<input type="hidden" name="stripeToken" />').val(token));
+
+                //add the event_id of the finish-btn for webflow to continue
+                var $finish_btn = $("#finish-btn");
+                $form.append($('<input type="hidden" name="' + $finish_btn.attr('name') +  '" value="' + $finish_btn.val() + '" />'));
+
                 // and submit
-                $form.get(0).submit();
+                $form.submit();
             }
         };
 
     });
+
 </script>
 
 <g:form name="myForm">
